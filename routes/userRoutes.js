@@ -1,17 +1,23 @@
 import Router from 'koa-router';
 import { authenticateToken } from '../middlewares/authenticateToken.js';
+import  upload from '../middlewares/upload.js';
+
 import { authorizeRole } from '../middlewares/authorizeRole.js';
 import { 
-    registerAdmin,
-    getAllUsers,
-    updateUserByAdmin,
-    deleteUserByAdmin,
+    
     registerUser,
     loginUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    updateUserProfile
 } from '../controllers/userController.js';
+import { registerAdmin,
+    getAllUsers,
+    updateUserByAdmin,
+    deleteUserByAdmin } from '../controllers/adminController.js';
 
+    import {  generateResetOtp, 
+        resetPassword } from '../controllers/passwordController.js';
 const router = new Router();
 
 // Admin Routes
@@ -24,6 +30,12 @@ router.delete('/admin/users/:id', authenticateToken, authorizeRole('admin'), del
 router.post('/register', registerUser); 
 router.post('/login', loginUser); 
 router.put('/user/:id', authenticateToken, updateUser); 
-router.delete('/user/:id', authenticateToken, deleteUser); 
+router.delete('/user/:id', authenticateToken, deleteUser);
+router.post('/upload-profile', upload.single('profile'), updateUserProfile); 
+
+
+//otp pasword reset
+router.post('/password-reset-request', generateResetOtp);
+router.put('/password-reset', resetPassword);
 
 export default router;

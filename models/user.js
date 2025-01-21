@@ -28,8 +28,19 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'user', 
-    }
-    
+    },
+    resetOtp: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    resetOtpExpire: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    profileImage: {
+        type: DataTypes.STRING,
+        allowNull: true, // User might not upload a profile initially
+    },
 });
 
 export {User};
