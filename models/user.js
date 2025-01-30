@@ -29,6 +29,18 @@ const User = sequelize.define('User', {
         allowNull: false,
         defaultValue: 'user', 
     },
+    permanentAddress: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    secondaryAddress: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    citizenshipNo: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     resetOtp: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -39,8 +51,11 @@ const User = sequelize.define('User', {
     },
     profileImage: {
         type: DataTypes.STRING,
-        allowNull: true, // User might not upload a profile initially
+        allowNull: true, 
     },
 });
 
-export {User};
+
+
+// Export the User model so it can be used in UserProfile
+export { User };

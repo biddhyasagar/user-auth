@@ -1,11 +1,17 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
+
 import userRoutes from './routes/userRoutes.js';
 import { connectDatabase } from './config/database.js';
 
 const app = new Koa();
+
+
 app.use(bodyParser());
+
+
 app.use(userRoutes.routes()).use(userRoutes.allowedMethods());
+
 
 const startServer = async () => {
     try {

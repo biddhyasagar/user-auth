@@ -3,13 +3,14 @@ import bcrypt from 'bcryptjs';
 import { createToken } from '../services/authService.js';
 import { userValidationSchema } from '../services/validationService.js';
 import * as Yup from 'yup';
+import { UserProfile } from '../models/userprofile.js';
 
-// Register User (POST /register)
+// Register User (POST /register)`
 export const registerUser = async (ctx) => {
-    const { username, email, password } = ctx.request.body;
+    const { username, email, password, permanentAddress, secondaryAddress, citizenshipNo } = ctx.request.body;
 
     try {
-        await userValidationSchema.validate({ username, email, password });
+        await userValidationSchema.validate({ username, email, password,  permanentAddress, secondaryAddress, citizenshipNo });
 
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
@@ -24,8 +25,13 @@ export const registerUser = async (ctx) => {
             username,
             email,
             password: hashedPassword,
+            permanentAddress,
+            secondaryAddress,
+            citizenshipNo,
             role: 'user',
+            
         });
+        await UserProfile.create({userId: newUser.id})
 
         ctx.status = 201;
         ctx.body = { message: 'User registered successfully', user: newUser };
@@ -140,11 +146,9 @@ export const deleteUser = async (ctx) => {
     }
 };
 
-
-// Update user profile with uploaded file
+//updateuser profile
 export const updateUserProfile = async (ctx) => {
-    const userId = ctx.user.id; // Assume user ID is extracted from JWT token
-    const file = ctx.file;
+    const file = ctx.req.file; 
 
     if (!file) {
         ctx.status = 400;
@@ -152,22 +156,32 @@ export const updateUserProfile = async (ctx) => {
         return;
     }
 
+    const { id } = ctx.params; 
+    const { description } = ctx.request.body; 
+
     try {
-        const user = await User.findByPk(userId);
+        const user = await User.findByPk(id);
         if (!user) {
             ctx.status = 404;
             ctx.body = { error: 'User not found' };
             return;
         }
 
-        // Update user profile with the file path
-        user.profileImage = file.path;
+        
+        user.profileImage = file.path; 
+        if (description) user.description = description; 
+
         await user.save();
 
         ctx.status = 200;
-        ctx.body = { message: 'Profile updated successfully', user };
+        ctx.body = {
+            message: 'Profile updated successfully',
+            filePath: file.path,
+            filename: file.filename,
+            description,
+        };
     } catch (error) {
         ctx.status = 500;
         ctx.body = { error: error.message };
     }
-};
+};  
