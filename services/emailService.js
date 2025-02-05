@@ -14,7 +14,7 @@ export const sendOtpEmail = async (email, otp) => {
         from: '<no-reply@loginapp.com>',
         to: email,
         subject: 'Password Reset OTP',
-        text: `Your OTP for password reset is: ${otp}. Itexpire.. 15 minutes.`,
+        text: `Your OTP for password reset is: ${otp}. It...expire.. 15 minutes.`,
     };
 
     try {

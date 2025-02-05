@@ -19,11 +19,11 @@ const UserProfile = sequelize.define('UserProfile', {
     },
 });
 
-UserProfile.belongsTo(User, {
-    foreignKey: 'userId',
-    as: 'user',
-});
-// Create the relationship once both models are in
+// UserProfile.belongsTo(User, {
+//     foreignKey: 'userId',
+//     as: 'user',
+// });
+
 User.hasOne(UserProfile, {
     foreignKey: 'userId',
     as: 'profile',

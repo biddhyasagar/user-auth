@@ -11,14 +11,15 @@ module.exports = {
           primaryKey: true,
           allowNull: false,
         },
+        //fk
         userId: {
           type: Sequelize.INTEGER,
           allowNull: false,
           references: {
-            model: 'Users', // Make sure the Users table exists
+            model: 'Users', 
             key: 'id',
           },
-          onDelete: 'CASCADE', // Delete UserProfile when User is deleted
+          onDelete: 'CASCADE', // it .....Delete userprofile when User is deleted
         },
         profileImage: {
           type: Sequelize.STRING,

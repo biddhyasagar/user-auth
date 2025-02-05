@@ -3,9 +3,9 @@ import bcrypt from 'bcryptjs';
 import { createToken } from '../services/authService.js';
 import { userValidationSchema } from '../services/validationService.js';
 import * as Yup from 'yup';
-import { UserProfile } from '../models/userprofile.js';
+import { UserProfile } from '../models/userProfile.js';
 
-// Register User (POST /register)`
+// Register User (POST..../register)`
 export const registerUser = async (ctx) => {
     const { username, email, password, permanentAddress, secondaryAddress, citizenshipNo } = ctx.request.body;
 
@@ -23,6 +23,7 @@ export const registerUser = async (ctx) => {
 
         const newUser = await User.create({
             username,
+            
             email,
             password: hashedPassword,
             permanentAddress,
@@ -41,12 +42,12 @@ export const registerUser = async (ctx) => {
     }
 };
 
-// User Login (POST /login)
+// User Login (POST___/login)
 export const loginUser = async (ctx) => {
     const { email, password } = ctx.request.body;
 
     try {
-        const user = await User.findOne({ where: { email } });
+        const user = await User.scope('withPassword').findOne({ where: { email } });
         if (!user) {
             ctx.status = 404;
             ctx.body = { error: 'User not found' };
@@ -89,7 +90,7 @@ export const updateUser = async (ctx) => {
             return;
         }
 
-        // Validation schema for updating user
+    
         const updateValidationSchema = Yup.object({
             username: Yup.string().min(3, 'Username must be at least 3 characters'),
             email: Yup.string().email('Invalid email format'),

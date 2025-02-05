@@ -11,17 +11,17 @@ export const createUserByAdmin = async (ctx) => {
     const { username, email, permanentAddress, secondaryAddress, citizenshipNo } = ctx.request.body;
   
     try {
-      // Validate input (exclude password validation since it's auto-generated)
+      
       await userValidationSchema.validate({ 
         username, 
         email, 
-        password: 'temporary-password', // Placeholder to bypass validation
+        password: 'temporary-password', 
         permanentAddress, 
         secondaryAddress, 
         citizenshipNo 
       });
   
-      // Check if the user already exists
+      
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
         ctx.status = 400;
@@ -29,10 +29,9 @@ export const createUserByAdmin = async (ctx) => {
         return;
       }
   
-      // Generate a temporary password (not sent to the user)
       const temporaryPassword = await bcrypt.hash(Math.random().toString(36).slice(-8), 10);
   
-      // Create the user with a temporary password
+     
       const newUser = await User.create({
         username,
         email,
@@ -43,18 +42,17 @@ export const createUserByAdmin = async (ctx) => {
         role: 'user',
       });
   
-      // Generate OTP for password reset
+     
       const otp = otpGenerator.generate(6, { 
         upperCase: true, 
         specialChars: false 
       });
   
-      // Save OTP and expiration time (15 minutes)
       newUser.resetOtp = otp;
       newUser.resetOtpExpire = Date.now() + 15 * 60 * 1000;
       await newUser.save();
   
-      // Send OTP to the user's email
+   
       await sendOtpEmail(email, otp);
   
       ctx.status = 201;
@@ -126,7 +124,7 @@ export const updateUserByAdmin = async (ctx) => {
             return;
         }
 
-        // Validate only username and email field
+        //todo import from validation folder
         const updateValidationSchema = Yup.object({
             username: Yup.string().min(3, 'Username must be at least 3 characters'),
             email: Yup.string().email('Invalid email format'),
@@ -134,7 +132,6 @@ export const updateUserByAdmin = async (ctx) => {
 
         await updateValidationSchema.validate({ username, email });
 
-        // Updating here username and email only
         if (username) user.username = username;
         if (email) user.email = email;
 
@@ -183,13 +180,13 @@ export const searchUsers = async (ctx) => {
       if (email) whereClause.email = { [Op.like]: `%${email}%` }; 
       if (role) whereClause.role = role; 
   
-      
+    //todo change to svc folder    
       const users = await User.findAll({
         where: whereClause,
       });
   
       ctx.status = 200;
-      ctx.body = { message: 'Search successful', users };
+      ctx.body = { message: 'Search successful', data:users };
     } catch (error) {
       ctx.status = 500;
       ctx.body = { error: error.message };

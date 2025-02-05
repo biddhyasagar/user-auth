@@ -3,7 +3,7 @@ import otpGenerator from 'otp-generator';
 import bcrypt from 'bcryptjs';
 import { sendOtpEmail } from '../services/emailService.js';
 
-// Password Reset - Generate OTP
+// Password Reset through............ Generate OTP
 export const generateResetOtp = async (ctx) => {
     const { email } = ctx.request.body;
 
